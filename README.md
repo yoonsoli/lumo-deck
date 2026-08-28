@@ -4,6 +4,8 @@
 
 **→ https://yoonsoli.github.io/lumo-deck/**
 
+English (22 slides) → https://yoonsoli.github.io/lumo-deck-en/
+
 구치파치 (피지컬 AI) · 윤솔민 · 권희정 · 박소현 · 정시윤
 
 ---
