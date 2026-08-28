@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html class="light" lang="ko">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Lumo — 발표자료</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+            extend: {
+                colors: {
+                    "secondary": "#5d5f5f", "on-background": "#111c2c", "on-secondary-fixed-variant": "#454747",
+                    "surface-container-lowest": "#ffffff", "inverse-surface": "#263142", "outline": "#6e7881",
+                    "on-secondary": "#ffffff", "on-primary-container": "#003e58", "surface-container-high": "#dee8ff",
+                    "tertiary-container": "#bfa100", "error-container": "#ffdad6", "surface-variant": "#d8e3fa",
+                    "on-tertiary": "#ffffff", "on-primary": "#ffffff", "on-surface-variant": "#3e4850",
+                    "on-secondary-container": "#616363", "primary": "#00658d", "surface-container-highest": "#d8e3fa",
+                    "surface": "#f9f9ff", "on-tertiary-container": "#453800", "surface-container-low": "#f0f3ff",
+                    "error": "#ba1a1a", "secondary-fixed-dim": "#c6c6c7", "tertiary": "#705d00",
+                    "primary-container": "#00aeef", "on-tertiary-fixed": "#221b00", "on-primary-fixed-variant": "#004c6b",
+                    "secondary-fixed": "#e2e2e2", "surface-bright": "#f9f9ff", "background": "#f9f9ff",
+                    "on-secondary-fixed": "#1a1c1c", "surface-container": "#e7eeff", "tertiary-fixed-dim": "#e9c400",
+                    "surface-dim": "#cfdaf1", "surface-tint": "#00658d", "outline-variant": "#bdc8d1",
+                    "secondary-container": "#dfe0e0", "primary-fixed-dim": "#82cfff", "on-tertiary-fixed-variant": "#544600",
+                    "inverse-on-surface": "#ebf1ff", "on-surface": "#111c2c", "inverse-primary": "#82cfff",
+                    "on-error-container": "#93000a", "on-primary-fixed": "#001e2d", "on-error": "#ffffff",
+                    "primary-fixed": "#c6e7ff", "tertiary-fixed": "#ffe16d"
+                },
+                borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
+                spacing: { base: "8px", lg: "48px", sm: "12px", "margin-mobile": "16px", "margin-desktop": "64px", gutter: "24px", xs: "4px", xl: "80px", md: "24px" },
+                fontFamily: { "display-lg-mobile": ["Manrope"], "body-lg": ["Manrope"], "headline-md": ["Manrope"], "body-md": ["Manrope"], "label-sm": ["Manrope"], "display-lg": ["Manrope"], "label-bold": ["Manrope"] },
+                fontSize: {
+                    "display-lg-mobile": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "800" }],
+                    "body-lg": ["18px", { lineHeight: "28px", fontWeight: "500" }],
+                    "headline-md": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+                    "body-md": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+                    "label-sm": ["12px", { lineHeight: "16px", fontWeight: "600" }],
+                    "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "800" }],
+                    "label-bold": ["14px", { lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "700" }]
+                }
+            }
+        }
+    }
+</script>
+<style>
+    html, body { height: 100%; }
+    body { font-family: 'Manrope', sans-serif; background-color: #f9f9ff; color: #111c2c; overflow: hidden; }
+    .bouncy-hover:hover { transform: scale(1.02) translateY(-2px); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .ambient-shadow { box-shadow: 0px 8px 32px rgba(0, 174, 239, 0.08); }
+    .btn-press:active { transform: scale(0.96); box-shadow: none; transition: transform 0.1s; }
+    .primary-btn { border-bottom: 2px solid #004c6b; }
+    .mono { font-family: 'Manrope', monospace; }
+    .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+    .fill { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
+
+    #stage { position: relative; width: 100%; height: 100vh; }
+    .slide {
+        position: absolute; inset: 0; display: none; align-items: center; justify-content: center;
+        padding: 100px 64px;
+    }
+    .slide.active { display: flex; }
+    .slide-inner { width: 100%; max-width: 1180px; margin: 0 auto; position: relative; z-index: 10; }
+    .reveal { opacity: 0; transform: translateY(14px); }
+
+    .deco { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; border-radius: inherit; }
+    .deco .blob { position: absolute; border-radius: 9999px; filter: blur(70px); }
+
+    .dot { width: 7px; height: 7px; border-radius: 9999px; background: #bdc8d1; transition: background .2s; cursor: pointer; }
+    .dot.on { background: #00658d; }
+
+    .cmp-card { flex: 1; border-radius: 24px; padding: 32px; }
+
+    @media (max-width: 900px) {
+        .slide { padding: 90px 24px; }
+    }
+
+    /* ───────── 라이브 대시보드 임베드 ─────────
+       **이미지가 아니라 진짜로 도는 화면이다.** iframe이 콘솔(:8020)의 stage.html을
+       그대로 물고, 그 안에서 WebSocket이 붙어 카메라·판정·모터가 실시간으로 흐른다.
+
+       iframe이어야만 하는 이유: 대시보드의 WS는 **동일 출처**만 받는다(console.py의
+       origin_ok — 남이 열어 둔 페이지가 모터를 돌리는 것을 막는 검사다). 슬라이드 안에
+       코드를 복사해 넣으면 출처가 달라져 소켓이 403으로 잘리고, 화면은 "연결 중…"에서
+       영영 안 넘어간다. iframe 안쪽의 출처는 콘솔 자신이라 그 검사를 통과한다.
+
+       `?slide=1`은 대시보드에게 "슬라이드에 끼는 중"이라고 알린다 — 검증값을 접고
+       브랜드·탭을 숨기되, 상류 점과 LIVE 배지는 남긴다. */
+    /* 높이는 **남는 만큼 다 쓴다.** 짧게 잡으면 대시보드 아래쪽(램프 조준·front zone)이
+       잘리고, 잘린 화면은 "값이 없는 것"과 무대에서 구별이 안 된다. 위쪽 배지·제목이
+       차지하는 만큼만 빼고 나머지를 준다. */
+    .demo-live {
+        width: 100%; height: clamp(400px, calc(100vh - 260px), 820px);
+        border: 0; display: block;
+        border-radius: 18px; background: #f5f4ef;
+        box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 10px 40px rgba(0,0,0,.07);
+    }
+    .demo-wrap { width: 100%; max-width: 1180px; margin: 0 auto; position: relative; }
+    /* 콘솔이 안 떠 있으면 iframe이 빈 회색으로 남는다 — 그 자리에 무엇을 켜야 하는지
+       적어 둔다. iframe이 뜨면 그 위를 덮으므로 보이지 않는다. */
+    .demo-fallback {
+        position: absolute; inset: 0; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 10px; text-align: center;
+        border-radius: 18px; background: #f5f4ef; color: #6f6d66;
+        font-size: 14px; padding: 24px; z-index: 0;
+    }
+    .demo-fallback code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12.5px;
+        background: #fff; border-radius: 8px; padding: 6px 10px; color: #1c1c1a;
+    }
+    .demo-live { position: relative; z-index: 1; }
+    /* ───────── 폰 목업 (앱 라이브) ─────────
+       **이것도 이미지가 아니다.** iframe이 배포된 웹앱을 그대로 물고, 앱은 MQTT를
+       WebSocket으로 EMQX 브로커에 직접 붙는다 — 슬라이드·콘솔과 아무 관계가 없는
+       독립 경로다. 그래서 여기서 누르면 브로커를 거쳐 램프 보드가 실제로 반응한다.
+
+       높이를 먼저 정하고 폭을 비율로 따라가게 둔다(aspect-ratio). 폭을 고정하면
+       화면이 낮은 노트북에서 폰 아래가 잘린다 — 무대에서 제일 자주 나는 사고다. */
+    .phone {
+        position: relative; margin: 0 auto;
+        aspect-ratio: 390 / 844;
+        height: clamp(380px, calc(100vh - 250px), 760px);
+        padding: 11px;
+        border-radius: 46px;
+        background: #17181c;
+        box-shadow: 0 2px 6px rgba(0,0,0,.16), 0 26px 64px rgba(0,0,0,.26),
+                    inset 0 0 0 2px #2c2e34;
+    }
+    .phone-screen {
+        width: 100%; height: 100%; border: 0; display: block;
+        border-radius: 35px; background: #fff;
+    }
+    /* 다이내믹 아일랜드. **화면 위가 아니라 베젤 안쪽 끝에 걸친다** — 앱의 맨 위
+       컨트롤을 가리면 시연 중에 누를 것을 못 누른다. */
+    .phone-island {
+        position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+        width: 78px; height: 20px; border-radius: 999px;
+        background: #17181c; z-index: 2; pointer-events: none;
+    }
+    .demo-cap {
+        margin-top: 10px; font-size: 12px; color: #8a8a84; text-align: center;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+</style>
+<style>#lampNote{display:none !important}</style></head>
+<body class="bg-background">
+
+<!-- Chrome: top bar -->
+<header class="fixed top-0 left-0 right-0 z-40 flex items-center px-margin-desktop py-4">
+    <div class="flex items-center gap-2" style="flex:1;">
+        <svg width="26" height="26" viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="13" cy="13" r="12" fill="#00AEEF" opacity="0.18"></circle>
+            <circle cx="13" cy="13" r="6" fill="#00658D"></circle>
+        </svg>
+        <span class="font-headline-md text-primary font-extrabold tracking-tight" style="font-size:19px;">Lumo</span>
+    </div>
+    <div id="dots" class="hidden md:flex items-center gap-2" style="flex:1; justify-content:center;"></div>
+    <div style="flex:1;"></div>
+</header>
+
+<div id="miniLampWrap" style="position:fixed; top:8px; right:24px; z-index:40; width:228px;height:228px; display:none; pointer-events:none;">
+  <svg viewBox="0 0 600 600" width="100%" height="100%">
+    <defs>
+      <radialGradient id="bulbGlowMini" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity="1"></stop>
+        <stop offset="40%" stop-color="#fdfde2" stop-opacity="0.9"></stop>
+        <stop offset="100%" stop-color="#e2edd2" stop-opacity="1"></stop>
+      </radialGradient>
+    </defs>
+    <g transform="translate(50, 20)">
+      <path d="M 150,480 L 350,480 L 340,475 L 160,475 Z" fill="#3c424a"></path>
+      <rect x="155" y="475" width="190" height="3" fill="#cbd2d9"></rect>
+      <path d="M 160,475 L 340,475 L 320,455 L 180,455 Z" fill="#b0b8c2"></path>
+      <path d="M 180,455 L 320,455 L 300,450 L 200,450 Z" fill="#d8dfe6"></path>
+      <rect x="230" y="440" width="40" height="10" fill="#3c424a" rx="2"></rect>
+      <circle cx="250" cy="438" r="6" fill="#8a929c"></circle>
+      <path d="M 240,438 L 260,438 L 265,415 L 235,415 Z" fill="#3c424a"></path>
+      <path d="M 235,415 L 210,365 L 225,355 L 255,370 L 265,415 Z" fill="#3c424a"></path>
+      <line x1="240" y1="422" x2="200" y2="340" stroke="#3c424a" stroke-width="2.5" stroke-linecap="round"></line>
+      <line x1="260" y1="418" x2="242" y2="320" stroke="#3c424a" stroke-width="2.5" stroke-linecap="round"></line>
+      <polygon points="200,340 245,375 220,385 185,350" fill="#3c424a"></polygon>
+      <circle cx="200" cy="340" r="8" fill="#8a929c"></circle>
+      <circle cx="242" cy="320" r="7" fill="#8a929c"></circle>
+      <line x1="200" y1="340" x2="275" y2="255" stroke="#3c424a" stroke-width="2.5"></line>
+      <line x1="200" y1="340" x2="260" y2="245" stroke="#3c424a" stroke-width="2.5" stroke-linecap="round"></line>
+      <line x1="242" y1="320" x2="280" y2="265" stroke="#3c424a" stroke-width="2.5" stroke-linecap="round"></line>
+      <path d="M 260,245 L 280,265 L 285,240 L 270,230 Z" fill="#3c424a"></path>
+      <g id="miniLampHead" style="transform-origin:276px 224px;">
+        <rect x="270" y="215" width="12" height="18" fill="#8a929c" rx="2" transform="rotate(-15 276 224)"></rect>
+        <path d="M 265,210 C 265,190 280,180 295,185 C 305,190 300,215 285,220 Z" fill="#3c424a"></path>
+        <circle cx="295" cy="180" r="72" fill="#e2edd2" stroke="#3a4048" stroke-width="3"></circle>
+        <circle cx="295" cy="180" r="35" fill="#d3e2be" stroke="#aab896" stroke-width="2"></circle>
+        <circle cx="295" cy="180" r="24" fill="url(#bulbGlowMini)" stroke="#c2d1ad" stroke-width="2"></circle>
+        <circle cx="295" cy="180" r="16" fill="#ffffff" stroke="#3c424a" stroke-width="0.8" opacity="0.9"></circle>
+      </g>
+    </g>
+  </svg>
+</div>
+
+<!-- Chrome: bottom bar -->
+<footer class="fixed bottom-0 left-0 right-0 z-40 flex items-center justify-between px-margin-desktop py-5">
+    <div class="flex items-center gap-3">
+        <span id="slideCount" class="mono text-on-surface-variant font-label-bold text-label-bold" style="font-size:12px; opacity:.65;">01 / 13</span>
+    </div>
+    <div class="flex items-center gap-2">
+        <button id="prevBtn" class="bg-surface-container-lowest text-primary rounded-full w-12 h-12 flex items-center justify-center ambient-shadow btn-press bouncy-hover">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <!-- 램프가 방금 무엇을 했는지. 발표자만 보면 되므로 작고 흐리게. -->
+        <div id="lampNote" style="position:fixed;left:24px;bottom:24px;z-index:60;
+             font-size:12px;color:#00aeef;background:#ffffffdd;padding:6px 12px;
+             border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none;
+             box-shadow:0 2px 12px #0001;"></div>
+        <button id="nextBtn" class="bg-primary text-on-primary rounded-full w-12 h-12 flex items-center justify-center primary-btn ambient-shadow btn-press bouncy-hover">
+            <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+    </div>
+</footer>
+
+<main id="stage">
+
+<!-- ================= 01 TITLE ================= -->
+<section class="slide active" data-budget="TITLE · 0:15">
+  <div class="deco"><div class="blob" style="width:520px;height:520px;right:-140px;top:-140px;background:#00aeef2e;"></div><div class="blob" style="width:360px;height:360px;left:-100px;bottom:-120px;background:#bfa10022;"></div></div>
+  <div class="slide-inner flex flex-col md:flex-row items-center justify-between gap-lg">
+    <div class="flex-1 flex flex-col gap-md max-w-xl">
+      <span class="reveal bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold px-sm py-xs rounded-full w-max">구치파치 피지컬AI</span>
+      <h1 class="reveal font-display-lg text-primary-container font-extrabold tracking-tight" style="font-size:clamp(56px,8vw,104px); line-height:1;">Lumo</h1>
+      <p class="reveal font-body-lg text-body-lg text-on-surface-variant">시선이 흐트러지는 순간, 빛이 다시 데려옵니다</p>
+      <p class="reveal mono text-on-surface-variant" style="font-size:12px; opacity:.55;">윤솔민 · 권희정 · 박소현 · 정시윤</p>
+    </div>
+    <div class="flex-1 flex flex-col items-center justify-center gap-3 reveal">
+      <div id="lampMark" style="width:440px;height:440px; cursor:pointer;">
+        <svg viewBox="0 0 600 600" width="100%" height="100%">
+          <defs>
+            <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="1"></stop>
+              <stop offset="40%" stop-color="#fdfde2" stop-opacity="0.9"></stop>
+              <stop offset="100%" stop-color="#e2edd2" stop-opacity="1"></stop>
+            </radialGradient>
+            <filter id="softBlur" x="-100%" y="-100%" width="300%" height="300%">
+              <feGaussianBlur stdDeviation="18"></feGaussianBlur>
+            </filter>
+            <style>
+              .lamp3-frame { fill: #3c424a; stroke: #2b3036; stroke-width: 1.5; stroke-linejoin: round; }
+              .lamp3-joint { fill: #8a929c; stroke: #3c424a; stroke-width: 1; }
+              .lamp3-light { fill: #cbd2d9; stroke: #3c424a; stroke-width: 1; }
+              .lamp3-outline { stroke: #3c424a; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+            </style>
+          </defs>
+
+          <g id="luxo-lamp" transform="translate(50, 20)">
+            <!-- glow halo (off by default) -->
+            <circle id="lampGlow" cx="295" cy="180" r="0" opacity="0" fill="#eef2da" filter="url(#softBlur)"></circle>
+
+            <!-- floor shadow -->
+            <ellipse cx="250" cy="485" rx="130" ry="4" fill="#6c737c" opacity="0.6"></ellipse>
+
+            <!-- base -->
+            <path d="M 150,480 L 350,480 L 340,475 L 160,475 Z" class="lamp3-frame"></path>
+            <rect x="155" y="475" width="190" height="3" fill="#cbd2d9"></rect>
+            <path d="M 160,475 L 340,475 L 320,455 L 180,455 Z" fill="#b0b8c2" stroke="#3c424a" stroke-width="2"></path>
+            <path d="M 180,455 L 320,455 L 300,450 L 200,450 Z" fill="#d8dfe6" stroke="#3c424a" stroke-width="2"></path>
+            <rect x="230" y="440" width="40" height="10" class="lamp3-frame" rx="2"></rect>
+            <circle cx="250" cy="438" r="6" class="lamp3-joint"></circle>
+
+            <!-- lower joint mechanism -->
+            <path d="M 240,438 L 260,438 L 265,415 L 235,415 Z" class="lamp3-frame"></path>
+            <circle cx="242" cy="422" r="4" fill="#ffffff" stroke="#3c424a" stroke-width="1.5"></circle>
+
+            <path d="M 235,415 L 210,365 L 225,355 L 255,370 L 265,415 Z" class="lamp3-frame"></path>
+            <circle cx="220" cy="362" r="4.5" fill="#ffffff" stroke="#3c424a" stroke-width="1.5"></circle>
+            <circle cx="250" cy="380" r="4.5" fill="#ffffff" stroke="#3c424a" stroke-width="1.5"></circle>
+
+            <!-- lower parallel wires -->
+            <line x1="240" y1="422" x2="200" y2="340" class="lamp3-outline"></line>
+            <line x1="260" y1="418" x2="242" y2="320" class="lamp3-outline"></line>
+
+            <polygon points="200,340 245,375 220,385 185,350" class="lamp3-frame"></polygon>
+            <line x1="200" y1="340" x2="245" y2="375" stroke="#ffffff" stroke-width="1.5"></line>
+
+            <!-- center elbow -->
+            <circle cx="200" cy="340" r="8" class="lamp3-joint"></circle>
+            <circle cx="200" cy="340" r="4" fill="#ffffff" stroke="#3c424a" stroke-width="1"></circle>
+            <circle cx="242" cy="320" r="7" class="lamp3-joint"></circle>
+            <circle cx="242" cy="320" r="3.5" fill="#ffffff" stroke="#3c424a" stroke-width="1"></circle>
+
+            <!-- upper wires -->
+            <line x1="200" y1="340" x2="275" y2="255" stroke="#3c424a" stroke-width="2.5"></line>
+            <line x1="200" y1="340" x2="260" y2="245" class="lamp3-outline"></line>
+            <line x1="242" y1="320" x2="280" y2="265" class="lamp3-outline"></line>
+
+            <path d="M 260,245 L 280,265 L 285,240 L 270,230 Z" class="lamp3-frame"></path>
+            <circle cx="272" cy="240" r="4" fill="#ffffff" stroke="#3c424a" stroke-width="1.5"></circle>
+            <circle cx="280" cy="255" r="4" fill="#ffffff" stroke="#3c424a" stroke-width="1.5"></circle>
+
+            <!-- head assembly: rotates to track the cursor -->
+            <g id="lampHead" style="transform-origin:276px 224px;">
+              <rect x="270" y="215" width="12" height="18" class="lamp3-joint" rx="2" transform="rotate(-15 276 224)"></rect>
+              <path d="M 265,210 C 265,190 280,180 295,185 C 305,190 300,215 285,220 Z" class="lamp3-frame"></path>
+
+              <circle cx="295" cy="180" r="72" fill="#e2edd2" stroke="#3a4048" stroke-width="3"></circle>
+              <circle cx="295" cy="180" r="68" fill="none" stroke="#2b3036" stroke-width="1" opacity="0.4"></circle>
+              <circle cx="295" cy="180" r="35" fill="#d3e2be" stroke="#aab896" stroke-width="2"></circle>
+              <circle id="lampBulb" cx="295" cy="180" r="24" fill="url(#bulbGlow)" stroke="#c2d1ad" stroke-width="2" opacity="0.35"></circle>
+              <circle id="lampCore" cx="295" cy="180" r="16" fill="#ffffff" stroke="#3c424a" stroke-width="0.8" opacity="0.4"></circle>
+            </g>
+          </g>
+        </svg>
+      </div>
+      <span id="lampHint" class="mono text-on-surface-variant" style="font-size:11.5px; opacity:.55; transition:opacity .4s;">클릭하면 Lumo가 켜집니다</span>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 TEAM ================= -->
+<section class="slide" data-budget="TEAM · 0:10">
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">TEAM</span>
+      <img src="assets/guchipachi-mascot.png" alt="구치파치 마스코트" class="reveal" style="width:76px;height:76px;object-fit:contain;">
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(30px,4vw,46px);">저희는 구치파치입니다</h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-2">
+        <span class="bg-tertiary-container text-on-tertiary-container font-label-bold text-label-bold px-sm py-xs rounded-full w-max" style="font-size:10px;">팀장</span>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:22px;">윤솔민</h3>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-2">
+        <span class="bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max" style="font-size:10px;">팀원</span>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:22px;">권희정</h3>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-2">
+        <span class="bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max" style="font-size:10px;">팀원</span>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:22px;">박소현</h3>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-2">
+        <span class="bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max" style="font-size:10px;">팀원</span>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:22px;">정시윤</h3>
+      </div>
+    </div>
+    <p class="reveal font-body-md text-body-md text-secondary">커밋 106개, 4명이 나눠서 기록했습니다.</p>
+  </div>
+</section>
+
+<!-- ================= 03 PROBLEM ================= -->
+<section class="slide" data-budget="PROBLEM · 0:25">
+  <div class="deco"><div class="blob" style="width:460px;height:460px;left:-120px;top:-100px;background:#93690e14;"></div></div>
+  <div class="slide-inner flex flex-col gap-lg max-w-4xl">
+    <span class="reveal bg-error-container text-error font-label-bold text-label-bold px-sm py-xs rounded-full w-max">PROBLEM</span>
+    <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(30px,4.4vw,50px); line-height:1.15;">시험 기간, 집중력은<br>47초마다 흔들립니다</h2>
+    <p class="reveal font-body-lg text-body-lg text-on-surface-variant max-w-2xl">사람의 평균 집중 지속 시간은 47초에 불과하다는 연구 결과가 있습니다. 수험생도, 재택근무자도 겪는 문제지만 방 안의 조명은 그 순간을 전혀 알지 못합니다.</p>
+  </div>
+</section>
+
+<!-- ================= 04 LIMITATIONS ================= -->
+<section class="slide" data-budget="LIMITATIONS · 0:20">
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">LIMITATIONS</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(26px,3.6vw,42px); line-height:1.2;">기존 스마트 스탠드는 "상태"를 모른 채<br>사람이 직접 조절해야 할 뿐</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow flex flex-col gap-base">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:30px;">light_mode</span>
+        <h3 class="font-label-bold text-label-bold">BenQ 스마트 스탠드</h3>
+        <p class="font-body-md text-body-md text-secondary">밝기·색온도를 앱에서 사람이 직접 조절합니다.</p>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow flex flex-col gap-base">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:30px;">lightbulb</span>
+        <h3 class="font-label-bold text-label-bold">샤오미 스마트 조명</h3>
+        <p class="font-body-md text-body-md text-secondary">역시 밝기·색온도를 사람이 매번 맞춰야 합니다.</p>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow flex flex-col gap-base">
+        <span class="material-symbols-outlined text-on-surface-variant" style="font-size:30px;">notifications</span>
+        <h3 class="font-label-bold text-label-bold">단순 알림 앱</h3>
+        <p class="font-body-md text-body-md text-secondary">사용자 상태와 무관하게 정해진 알림만 울립니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 05 SOLUTION ================= -->
+<section class="slide" data-budget="SOLUTION · 0:20">
+  <div class="deco"><div class="blob" style="width:500px;height:500px;right:-140px;bottom:-140px;background:#00aeef26;"></div></div>
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-primary-container/20 text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max" style="background:#00aeef22;">SOLUTION</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,44px); line-height:1.2;">스스로 보고, 움직이고, 조언하는 조명, <span class="text-primary-container">Lumo</span></h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-md">
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-base">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:34px;">visibility</span>
+        <h3 class="font-label-bold text-label-bold text-primary">비전</h3>
+        <p class="font-body-md text-body-md text-secondary">카메라로 사용자의 행동을 스스로 봅니다.</p>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-base">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:34px;">settings_input_component</span>
+        <h3 class="font-label-bold text-label-bold text-primary">IoT</h3>
+        <p class="font-body-md text-body-md text-secondary">서보모터로 스스로 움직이고 반응합니다.</p>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col gap-base">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:34px;">insights</span>
+        <h3 class="font-label-bold text-label-bold text-primary">데이터 분석</h3>
+        <p class="font-body-md text-body-md text-secondary">행동 데이터를 바탕으로 집중력 분석 리포트를 생성합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 06 SENSING ================= -->
+<section class="slide" data-budget="SENSING · 0:20">
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">SENSING</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,44px);">카메라 둘 — 책상을 보는 눈,<br>사람을 보는 눈</h2>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-lg ambient-shadow bouncy-hover flex flex-col gap-base">
+        <div class="flex items-center justify-between">
+          <span class="material-symbols-outlined text-primary fill" style="font-size:38px;">menu_book</span>
+          <span class="mono text-on-surface-variant" style="font-size:10px; opacity:.6;">YOLO + ByteTrack</span>
+        </div>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:20px;">책상캠 · Desk Cam</h3>
+        <p class="font-body-md text-body-md text-secondary">책상 위 사람과 물건을 찾아, 지금 필요한 대상에 서보를 조준합니다.</p>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-lg ambient-shadow bouncy-hover flex flex-col gap-base">
+        <div class="flex items-center justify-between">
+          <span class="material-symbols-outlined text-primary fill" style="font-size:38px;">face</span>
+          <span class="mono text-on-surface-variant" style="font-size:10px; opacity:.6;">MediaPipe · PERCLOS</span>
+        </div>
+        <h3 class="font-headline-md text-headline-md text-primary" style="font-size:20px;">사람캠 · Face Cam</h3>
+        <p class="font-body-md text-body-md text-secondary">눈 깜빡임·감김 비율(PERCLOS)로 졸음과 마이크로슬립을 0.5초 안에 포착합니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 07 DISTRACTION-RESPONSE ================= -->
+<section class="slide" data-budget="갈래 B · 0:15">
+  <div class="slide-inner flex flex-col gap-xl">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">SIGNAL · 갈래 B</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(26px,3.8vw,42px); line-height:1.2;">사람 → 앞 구역 → 타깃,<br>그 순서로 조명이 따라갑니다</h2>
+    </div>
+    <div class="flex items-center justify-between gap-sm">
+      <div class="reveal flex-1 bg-surface-container-lowest rounded-[24px] p-md ambient-shadow flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:34px;">person_search</span>
+        <span class="font-label-bold text-label-bold">사람 인식</span>
+      </div>
+      <span class="reveal material-symbols-outlined text-outline">arrow_forward</span>
+      <div class="reveal flex-1 bg-surface-container-lowest rounded-[24px] p-md ambient-shadow flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:34px;">crop_free</span>
+        <span class="font-label-bold text-label-bold">앞 구역 좁히기</span>
+      </div>
+      <span class="reveal material-symbols-outlined text-outline">arrow_forward</span>
+      <div class="reveal flex-1 bg-primary rounded-[24px] p-md ambient-shadow flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-white fill" style="font-size:34px;">my_location</span>
+        <span class="font-label-bold text-label-bold text-white">타깃 서보 조준</span>
+      </div>
+    </div>
+    <p class="reveal mono text-on-surface-variant" style="font-size:11px; opacity:.55;">상태머신 NORMAL → CARRYING → OBSERVING → FOLLOW_OUT</p>
+  </div>
+</section>
+
+<!-- ================= 08 DROWSINESS-RESPONSE ================= -->
+<section class="slide" data-budget="갈래 C→A · 0:20">
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">SIGNAL · 갈래 C → A</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(26px,3.8vw,42px); line-height:1.2;">졸음 신호는 여섯 단계(S1~S6)로 받습니다</h2>
+    </div>
+    <div class="reveal flex w-full rounded-lg overflow-hidden ambient-shadow" style="height:40px;" id="ladderBar">
+      <span class="ladder-seg" style="width:0%;background:#ffecd2;" data-w="16%"></span>
+      <span class="ladder-seg" style="width:0%;background:#fffaf0; border-left:1px solid #d8e3fa;" data-w="16%"></span>
+      <span class="ladder-seg" style="width:0%;background:#e7eeff;" data-w="16%"></span>
+      <span class="ladder-seg" style="width:0%;background:#d2e1ff;" data-w="18%"></span>
+      <span class="ladder-seg" style="width:0%;background:#aac8ff;" data-w="18%"></span>
+      <span class="ladder-seg" style="width:0%;background:#ffb347;" data-w="16%"></span>
+    </div>
+    <div class="reveal grid grid-cols-2 md:grid-cols-3 gap-sm font-body-md text-body-md" style="font-size:12.5px;">
+      <div><b class="text-primary">S1 몰입</b> — PERCLOS 10% 미만, 변화 없음</div>
+      <div><b class="text-primary">S2 예열</b> — 하품 1회, 색 살짝 차갑게·밝기 ×1.25</div>
+      <div><b class="text-primary">S3 산만</b> — 고개 이탈·휴대폰, 조명은 자리 유지</div>
+      <div><b class="text-primary">S4 각성 유도</b> — PERCLOS 15% 초과, 6500K로 전환</div>
+      <div><b class="text-primary">S5 개입</b> — 마이크로슬립, 1Hz 파동 3회 + 팬 왕복</div>
+      <div><b class="text-primary">S6 휴식 권유</b> — 30분 내 S5 3회, 앰버로 전환</div>
+    </div>
+    <p class="reveal font-body-md text-body-md text-secondary">마이크로슬립엔 1Hz 파동을 딱 3번만 주고, 30분 안에 세 번 반복되면 더 세게 켜는 대신 휴식을 권합니다.</p>
+  </div>
+</section>
+
+<!-- ================= 09 HARDWARE ================= -->
+<section class="slide" data-budget="HARDWARE · 0:15">
+  <div class="slide-inner flex flex-col gap-lg">
+    <div class="flex flex-col gap-xs max-w-3xl">
+      <span class="reveal bg-surface-container-high text-primary font-label-bold text-label-bold px-sm py-xs rounded-full w-max">HARDWARE</span>
+      <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,44px);">하드웨어 구성요소</h2>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:32px;">developer_board</span>
+        <span class="font-label-bold text-label-bold">ESP32C6 · ESP32S3</span>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:32px;">settings_input_component</span>
+        <span class="font-label-bold text-label-bold">서보 모터 3축</span>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:32px;">light</span>
+        <span class="font-label-bold text-label-bold">LED 모듈</span>
+      </div>
+      <div class="reveal bg-surface-container-lowest rounded-[24px] p-md ambient-shadow bouncy-hover flex flex-col items-center text-center gap-2">
+        <span class="material-symbols-outlined text-primary fill" style="font-size:32px;">videocam</span>
+        <span class="font-label-bold text-label-bold">카메라 × 2</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10 LIVE DEMO ================= -->
+<section class="slide" data-budget="LIVE DEMO · 2:30">
+  <div class="slide-inner flex flex-col gap-lg items-center text-center">
+    <span class="reveal bg-primary text-white font-label-bold text-label-bold px-lg py-xs rounded-full w-max flex items-center gap-2">
+      <span class="material-symbols-outlined fill" style="font-size:16px;">play_circle</span> LIVE DEMO
+    </span>
+    <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(30px,4.6vw,52px);">지금부터 라이브로 보여드립니다</h2>
+  </div>
+</section>
+
+<!-- ================= 11 DEMO 1 ================= -->
+<!-- 「집중 대상 추적」 대시보드가 여기 **살아서** 들어간다. 캡처 이미지가 아니다 —
+     책 카메라 영상·탐지 상자·앞 구역·조준선·모터 틱이 실시간으로 흐른다.
+     띄우는 법은 아래 iframe 주석 참고. -->
+<section class="slide" data-budget="LIVE DEMO · ①" style="align-items:flex-start; padding-top:64px;">
+  <div class="slide-inner flex flex-col gap-sm items-center text-center">
+    <span class="reveal bg-primary text-white font-label-bold text-label-bold px-lg py-xs rounded-full w-max">DEMO 1</span>
+    <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(18px,2.2vw,26px);">책을 따라 움직입니다</h2>
+    <div class="demo-wrap reveal"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:340px;border:2px dashed #bdc8d1;border-radius:24px;background:#f0f3ff;"><div style="font-size:15px;font-weight:800;color:#00658d;">라이브 시연 구간</div><div style="font-size:13px;color:#3e4850;text-align:center;max-width:520px;line-height:1.75;">책 카메라 영상 위에 탐지 상자·앞 구역·조준선이 실시간으로 흐릅니다.<br>책을 옆으로 옮기면 조명이 따라갑니다 — 발표 현장에서 보여드립니다.</div></div></div></section>
+
+<!-- ================= 12 DEMO 2 ================= -->
+<!-- 「집중도 탐지」 대시보드. 얼굴 영상·랜드마크·PERCLOS·집중 단계(S1~S6)가
+     실시간으로 흐르고, 램프가 실제로 어느 상태로 빛나는지도 같이 나온다. -->
+<section class="slide" data-budget="LIVE DEMO · ②" style="align-items:flex-start; padding-top:64px;">
+  <div class="slide-inner flex flex-col gap-sm items-center text-center">
+    <span class="reveal bg-primary text-white font-label-bold text-label-bold px-lg py-xs rounded-full w-max">DEMO 2</span>
+    <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(18px,2.2vw,26px);">졸음을 감지합니다</h2>
+    <div class="demo-wrap reveal"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:340px;border:2px dashed #bdc8d1;border-radius:24px;background:#f0f3ff;"><div style="font-size:15px;font-weight:800;color:#00658d;">라이브 시연 구간</div><div style="font-size:13px;color:#3e4850;text-align:center;max-width:520px;line-height:1.75;">얼굴 카메라가 눈 감김 비율(PERCLOS)을 재고, 단계에 따라 빛이 바뀝니다.<br>발표 현장에서 보여드립니다.</div></div></div></section>
+
+<!-- ================= 13 DEMO 3 ================= -->
+<!-- 스마트 조명 웹앱(github.com/JungSeeyun/smart-light)이 **폰 모양 안에서 실제로
+     돈다.** 앱은 MQTT over WebSocket으로 EMQX 브로커에 직접 붙으므로 이 슬라이드나
+     콘솔(:8020)과는 무관한 독립 경로다 — 여기서 누르면 브로커를 거쳐 램프 보드
+     `leds-01`이 그 자리에서 반응한다.
+
+     **인터넷이 필요한 유일한 데모다.** DEMO 1·2는 랜 안에서 끝나지만 브로커는 랜
+     밖이라, 발표장 망이 막히면 이 슬라이드만 죽는다.
+
+     흰 배경은 폰 목업이 주인공인 화면이라 배경이 조용해야 해서다. -->
+<section class="slide" data-budget="LIVE DEMO · ③"
+         style="align-items:flex-start; padding-top:56px; background:#ffffff;">
+  <div class="slide-inner flex flex-col gap-sm items-center text-center">
+    <span class="reveal bg-primary text-white font-label-bold text-label-bold px-lg py-xs rounded-full w-max">DEMO 3</span>
+    <h2 class="reveal font-display-lg text-on-background font-extrabold tracking-tight" style="font-size:clamp(18px,2.2vw,26px);">앱에서 색·밝기·각도를 직접 조절합니다</h2>
+    <div class="demo-wrap reveal"><div style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;width:100%;height:100%;min-height:340px;border:2px dashed #bdc8d1;border-radius:24px;background:#f0f3ff;"><div style="font-size:15px;font-weight:800;color:#00658d;">스마트 조명 앱</div><div style="font-size:13px;color:#3e4850;text-align:center;max-width:520px;line-height:1.75;">색·밝기는 MQTT 로 램프 보드에 직결되고,<br>각도는 노트북을 거쳐 서보로 갑니다.</div></div></div></section>
+
+<!-- ================= 16 CLOSING ================= -->
+<section class="slide" data-budget="CLOSING · 0:10">
+  <div class="deco"><div class="blob" style="width:560px;height:560px;left:50%;top:50%;transform:translate(-50%,-50%);background:#00aeef22;"></div></div>
+  <div class="slide-inner flex flex-col items-center text-center gap-lg">
+    <h2 class="reveal font-display-lg text-primary-container font-extrabold tracking-tight" style="font-size:clamp(30px,4.8vw,54px); line-height:1.2;">당신이 집중을 잃는 순간,<br>Lumo가 먼저 알아챕니다.</h2>
+    <p class="reveal font-body-lg text-body-lg text-on-surface-variant">구치파치 · 윤솔민 · 권희정 · 박소현 · 정시윤</p>
+    <span class="reveal mono text-on-surface-variant" style="font-size:12px; opacity:.6;">yoonsoli/lumo-lamp</span>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+    const slides = Array.from(document.querySelectorAll('.slide'));
+    const total = slides.length;
+    let current = 0;
+    let animating = false;
+
+    const dotsWrap = document.getElementById('dots');
+    slides.forEach((_, i) => {
+        const d = document.createElement('span');
+        d.className = 'dot' + (i === 0 ? ' on' : '');
+        d.addEventListener('click', () => goTo(i, i > current ? 1 : -1));
+        dotsWrap.appendChild(d);
+    });
+    const dots = Array.from(dotsWrap.children);
+
+    const slideCount = document.getElementById('slideCount');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const miniLampWrap = document.getElementById('miniLampWrap');
+
+    function pad(n) { return n.toString().padStart(2, '0'); }
+
+    function updateChrome() {
+        slideCount.textContent = pad(current + 1) + ' / ' + pad(total);
+        dots.forEach((d, i) => d.classList.toggle('on', i === current));
+        prevBtn.style.opacity = current === 0 ? '.35' : '1';
+        prevBtn.style.pointerEvents = current === 0 ? 'none' : 'auto';
+        nextBtn.style.opacity = current === total - 1 ? '.35' : '1';
+        nextBtn.style.pointerEvents = current === total - 1 ? 'none' : 'auto';
+        if (miniLampWrap) miniLampWrap.style.display = (current >= 1 && current <= 8) ? 'block' : 'none';
+    }
+
+    function revealContent(slide) {
+        const items = slide.querySelectorAll('.reveal');
+        anime.set(items, { opacity: 0, translateY: 14 });
+        anime({
+            targets: items,
+            opacity: [0, 1],
+            translateY: [14, 0],
+            delay: anime.stagger(80),
+            duration: 620,
+            easing: 'easeOutCubic'
+        });
+        const ladder = slide.querySelectorAll('.ladder-seg');
+        if (ladder.length) {
+            ladder.forEach(s => s.style.width = '0%');
+            anime({
+                targets: ladder,
+                width: (el) => el.getAttribute('data-w'),
+                delay: anime.stagger(120, { start: 300 }),
+                duration: 500,
+                easing: 'easeOutQuad'
+            });
+        }
+    }
+
+    function goTo(newIndex, dir) {
+        if (newIndex < 0 || newIndex >= total || newIndex === current || animating) return;
+        animating = true;
+        const cur = slides[current];
+        const next = slides[newIndex];
+
+        next.classList.add('active');
+        anime.set(next, { translateX: dir * 60 + 'px', opacity: 0 });
+        anime.set(next.querySelectorAll('.reveal'), { opacity: 0, translateY: 14 });
+
+        anime({
+            targets: cur,
+            translateX: (-dir * 60) + 'px',
+            opacity: 0,
+            duration: 420,
+            easing: 'easeInOutQuad',
+            complete: () => {
+                cur.classList.remove('active');
+                anime.set(cur, { translateX: 0, opacity: 1 });
+            }
+        });
+
+        anime({
+            targets: next,
+            translateX: 0,
+            opacity: 1,
+            duration: 520,
+            easing: 'easeOutExpo',
+            complete: () => {
+                animating = false;
+                revealContent(next);
+            }
+        });
+
+        current = newIndex;
+        updateChrome();
+
+        // ★ **애니메이션을 안 기다린다.** 램프가 움직이는 데 홈 복귀 2.5초 + 인사
+        //   2.6초가 걸리는데, 슬라이드 전환(0.5초)이 끝난 뒤에 시작하면 그만큼 더
+        //   늦는다. 발표에서는 버튼을 누른 순간 뭔가 일어나야 한다.
+        const act = ON_ENTER[newIndex];
+        if (act) { try { act(); } catch (e) { /* 덱이 멈추면 안 된다 */ } }
+    }
+
+    /* ══ 램프 — 슬라이드가 실물을 움직인다 ══════════════════════════════════
+       콘솔(:8020)의 WS를 그대로 쓴다. **이 파일이 console/static/ 안에 있어야만
+       된다** — 콘솔의 `origin_ok`가 「Origin의 host:port == Host」만 받는다.
+       다른 포트에서 열면 페이지는 멀쩡히 뜨고 **소켓만 403**으로 잘려서, 화면에는
+       아무 표시도 없이 램프만 안 움직인다. 제일 찾기 어려운 고장이라 여기 적어 둔다.
+
+       명령은 콘솔이 (to,cmd) 화이트리스트로 한 번 더 거른다. 여기서 쓰는 둘
+       (`follow`, `park_off`)은 이미 열려 있다.
+
+       ★ **발표 중에는 절대 안 죽는다.** 소켓이 없거나 끊겨도 슬라이드는 그냥
+         넘어간다 — 램프가 안 움직이는 것은 아쉬운 일이고, 덱이 멈추는 것은 사고다. */
+    const LAMP = { ws: null, ready: false, last: '' };
+
+    /* ══ 조준 설정 — `good-aim-2026-08-27` 태그의 값 그대로 ═══════════════════
+       사용자가 실기에서 「딱 좋다」고 확인한 조합이다. `motor/home.json`이 정본이고
+       여기 값은 그 사본이다 (`motor/AGENTS.md`의 「★ 기준 설정」 절).
+
+       ★ **왜 시연이 값을 들고 다니나.** bringup은 화면(트래킹 튜닝 탭)에서 돌린 값을
+         `home.json`에 계속 덮어쓴다 — 튜닝은 그러라고 있는 것이다. 그런데 발표는
+         **직전에 무엇을 만졌든 같은 움직임**이 나와야 한다. 그래서 슬라이드가
+         켜는 순간 이 값을 같이 실어 보낸다. `follow_set`이 설정을 먼저 적용하고
+         그다음에 `follow_start`를 부르므로 한 메시지로 끝난다.
+
+       값이 같으면 bringup은 파일을 다시 안 쓴다(`_cfg_snap`이 안 바뀐다).
+       기준을 옮기고 싶으면 **여기가 아니라 `home.json`을 고치고** 태그를 새로 단다. */
+    const AIM = {
+        to: 'motor', cmd: 'follow',
+        axes: {
+            x: { id: 2, gain: -1600.0, deadband: 0.015, trim: 0.0, on: true },
+            y: { id: 4, gain: -1500.0, deadband: 0.015, trim: -0.006, on: true },
+        },
+        speed: 1200,      // 서보 속도 상한 (0은 「제한 없음」이라 절대 안 쓴다)
+        slew: 0.12,       // 남은 거리를 이 시간에 간다 — 크면 부드럽고 느리다
+        aim_mode: 'chase',
+        chunk: true,      // 액션 청킹. 끄면 탐지 공백 0.2~0.45초에 목표가 멈춘다
+    };
+
+    function lampConnect() {
+        try {
+            const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+            LAMP.ws = new WebSocket(proto + '//' + location.host + '/ws');
+            LAMP.ws.onopen = () => { LAMP.ready = true; lampNote('램프 연결됨'); };
+            LAMP.ws.onclose = () => {
+                LAMP.ready = false;
+                lampNote('램프 끊김 — 콘솔(:8020)이 떠 있나');
+                setTimeout(lampConnect, 3000);   // 발표 중에 되살아나야 한다
+            };
+            LAMP.ws.onerror = () => { LAMP.ready = false; };
+        } catch (e) { LAMP.ready = false; }
+    }
+
+    function lampSend(msg, why) {
+        if (!LAMP.ready) { lampNote('램프가 안 붙어 있다 — ' + why + ' 건너뜀'); return; }
+        try { LAMP.ws.send(JSON.stringify(msg)); lampNote(why); }
+        catch (e) { lampNote('램프 명령 실패 — ' + why); }
+    }
+
+    /* 무슨 일이 일어났는지 화면 구석에 한 줄. 발표자가 「지금 눌렸나」를 알아야 한다 —
+       램프가 늦게 움직이면 한 번 더 누르게 되고, 그러면 인사가 처음부터 다시 돈다. */
+    function lampNote(text) {
+        LAMP.last = text;
+        const el = document.getElementById('lampNote');
+        if (!el) return;
+        el.textContent = text;
+        el.style.opacity = '1';
+        clearTimeout(lampNote._t);
+        lampNote._t = setTimeout(() => { el.style.opacity = '0'; }, 2600);
+    }
+
+    /* 슬라이드에 **들어올 때** 하는 일. 0부터 센다 (사람이 세는 번호 − 1).
+       ★ **여기 한 곳에만 둔다.** 버튼·키보드·점 클릭이 전부 goTo를 지나므로
+         어느 길로 넘어와도 같은 일이 일어난다. */
+    const ON_ENTER = {
+        // 1 → 2 (TEAM): 인사하고 홈 자세로 선다.
+        //
+        //   ★★ **먼저 추종을 끈다.** `greet`(bringup의 `greet_go`)는 `@calib`이라
+        //     **조준이 도는 동안 거절된다** — 인사와 조준이 같은 축을 쓰기 때문이다.
+        //     세션(`console/session.py`)이 사람을 보고 이미 추종을 켜 놨을 수 있고,
+        //     그러면 발표를 시작하는 순간 **아무 일도 안 일어난다.** 로그에도 안 남아서
+        //     「덱은 넘어가는데 램프만 가만히 있다」로만 보인다 (2026-08-27 실측).
+        //
+        //   정지 명령이 버스에서 끝날 시간을 주고 인사를 보낸다.
+        1: () => {
+            lampSend({ to: 'motor', cmd: 'follow', on: false }, '정지 — 인사 준비');
+            setTimeout(() => lampSend({ to: 'motor', cmd: 'follow', greet: true },
+                                      '인사 + 홈 자세'), 500);
+        },
+        // 10 → 11 (LIVE DEMO ①): 책 추종을 시작한다.
+        //   `greet:false`가 아니면 홈 복귀와 인사를 **또** 한다 — 2번에서 이미 했다.
+        10: () => lampSend({ ...AIM, on: true, greet: false }, '책 추종 시작'),
+        // 13 (LIVE DEMO ③, 폰 앱): 추종을 끄고 홈 자세로 세운다.
+        //   ★ **추종을 반드시 끈다.** 여기서부터는 앱이 모터를 몬다(MQTT →
+        //     `motor/mqtt_bridge.py` → bringup의 조그). 조준이 계속 돌고 있으면
+        //     같은 축을 둘이 몰게 되고, bringup이 조그를 거절해서 **앱 버튼만 조용히
+        //     안 먹는다.** 끄는 것이 곧 앱에게 축을 넘기는 일이다.
+        //   조명·조도는 보드 직결이라 이 셋과 무관하게 산다.
+        12: () => {
+            lampSend({ to: 'motor', cmd: 'follow', on: false }, '추종 정지 — 앱에 넘김');
+            setTimeout(() => lampSend({ to: 'motor', cmd: 'home' }, '홈 자세'), 400);
+        },
+    };
+
+    function next() { goTo(current + 1, 1); }
+    function prev() { goTo(current - 1, -1); }
+
+    lampConnect();
+
+    nextBtn.addEventListener('click', next);
+    prevBtn.addEventListener('click', prev);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    });
+
+    // title-slide lamp: follows cursor, click to turn on
+    const lampMark = document.getElementById('lampMark');
+    const lampHead = document.getElementById('lampHead');
+    const lampHint = document.getElementById('lampHint');
+    let lampOn = false;
+    let lastMove = 0;
+
+    if (lampMark && lampHead) {
+        // rotate() moves the head along its joint's arc: more positive = head dips down
+        // toward the desk (nodding down), more negative = head lifts up.
+        document.addEventListener('mousemove', (e) => {
+            if (current !== 0) return;
+            const now = Date.now();
+            if (now - lastMove < 16) return;
+            lastMove = now;
+            const xRatio = Math.min(1, Math.max(0, e.clientX / window.innerWidth));
+            const yRatio = Math.min(1, Math.max(0, e.clientY / window.innerHeight));
+            const swing = -34 + xRatio * 68;
+            const nod = -20 + yRatio * 40;
+            const rotate = Math.max(-48, Math.min(48, swing + nod));
+            anime({ targets: lampHead, rotate: rotate + 'deg', duration: 220, easing: 'easeOutExpo' });
+        });
+
+        lampMark.addEventListener('click', () => {
+            lampOn = !lampOn;
+            anime({ targets: '#lampGlow', r: lampOn ? 110 : 0, opacity: lampOn ? 0.6 : 0, duration: 1400, easing: 'easeInOutSine' });
+            anime({ targets: '#lampBulb', opacity: lampOn ? 1 : 0.35, duration: 900, easing: 'easeInOutSine' });
+            anime({ targets: '#lampCore', opacity: lampOn ? 0.9 : 0.4, duration: 900, easing: 'easeInOutSine' });
+            anime({ targets: lampHead, scale: [1, 1.08, 1], duration: 420, easing: 'easeOutQuad' });
+            if (lampHint) lampHint.style.opacity = lampOn ? '0' : '.55';
+        });
+    }
+
+    // mini footer lamp (pages 2-9): same head-follow behavior, smaller scale
+    const miniLampHead = document.getElementById('miniLampHead');
+    let miniLastMove = 0;
+    if (miniLampHead) {
+        document.addEventListener('mousemove', (e) => {
+            if (current < 1 || current > 8) return;
+            const now = Date.now();
+            if (now - miniLastMove < 16) return;
+            miniLastMove = now;
+            const xRatio = Math.min(1, Math.max(0, e.clientX / window.innerWidth));
+            const yRatio = Math.min(1, Math.max(0, e.clientY / window.innerHeight));
+            const swing = -34 + xRatio * 68;
+            const nod = -20 + yRatio * 40;
+            const rotate = Math.max(-48, Math.min(48, swing + nod));
+            anime({ targets: miniLampHead, rotate: rotate + 'deg', duration: 220, easing: 'easeOutExpo' });
+        });
+    }
+
+    updateChrome();
+    revealContent(slides[0]);
+})();
+</script>
+</body>
+</html>
